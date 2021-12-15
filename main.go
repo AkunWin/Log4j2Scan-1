@@ -56,7 +56,7 @@ func parserInput() {
 		help     bool
 	)
 	flag.IntVar(&port, "p", 8001, "server port")
-	flag.IntVar(&httpPort, "http-port", 8888, "http port")
+	flag.IntVar(&httpPort, "wp", 8888, "web port")
 	flag.BoolVar(&help, "help", false, "help info")
 	flag.Parse()
 	if help {
