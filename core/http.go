@@ -7,7 +7,6 @@ import (
 	"github.com/KpLi0rn/Log4j2Scan/model"
 	"net/http"
 	"sync"
-	"time"
 )
 
 var (
@@ -18,23 +17,25 @@ var (
 func StartHttpServer(renderChan *chan *model.Result) {
 	log.Info("start result http server")
 	mux := http.NewServeMux()
-	mux.Handle("/", &resultHandler{})
+	mux.Handle(config.DefaultHttpPath, &resultHandler{})
 	server := &http.Server{
 		Addr:         fmt.Sprintf(":%d", config.HttpPort),
-		WriteTimeout: time.Second * 3,
+		WriteTimeout: config.DefaultHttpTimeout,
 		Handler:      mux,
 	}
-	go func() {
-		for {
-			select {
-			case res := <-*renderChan:
-				lock.Lock()
-				resultList = append(resultList, res)
-				lock.Unlock()
-			}
-		}
-	}()
+	go listenData(renderChan)
 	_ = server.ListenAndServe()
+}
+
+func listenData(renderChan *chan *model.Result) {
+	for {
+		select {
+		case res := <-*renderChan:
+			lock.Lock()
+			resultList = append(resultList, res)
+			lock.Unlock()
+		}
+	}
 }
 
 type resultHandler struct {

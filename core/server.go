@@ -4,15 +4,15 @@ import (
 	"fmt"
 	"github.com/KpLi0rn/Log4j2Scan/config"
 	"github.com/KpLi0rn/Log4j2Scan/log"
-	module "github.com/KpLi0rn/Log4j2Scan/model"
+	"github.com/KpLi0rn/Log4j2Scan/model"
 	"net"
 )
 
 var (
-	ResultChan chan *module.Result
+	ResultChan chan *model.Result
 )
 
-func StartFakeServer(resultChan *chan *module.Result) {
+func StartFakeServer(resultChan *chan *model.Result) {
 	ResultChan = *resultChan
 	log.Info("start fake reverse server")
 	listen, err := net.Listen("tcp", fmt.Sprintf("0.0.0.0:%d", config.Port))
@@ -41,7 +41,7 @@ func acceptProcess(conn *net.Conn) {
 	hexStr := fmt.Sprintf("%x", buf[:num])
 	// LDAP Protocol
 	if "300c020101600702010304008000" == hexStr {
-		res := &module.Result{
+		res := &model.Result{
 			Host:   (*conn).RemoteAddr().String(),
 			Name:   "LDAP",
 			Finger: hexStr,
@@ -52,7 +52,7 @@ func acceptProcess(conn *net.Conn) {
 	}
 	// RMI Protocol
 	if checkRMI(buf) {
-		res := &module.Result{
+		res := &model.Result{
 			Host:   (*conn).RemoteAddr().String(),
 			Name:   "RMI",
 			Finger: fmt.Sprintf("%x", buf[0:7]),
