@@ -54,6 +54,8 @@ Demo
 
 ## 配合release中的burp插件使用
 
+f0ng 师傅的插件也可以直接配合进行使用：https://github.com/f0ng/log4j2burpscanner
+
 简单修改了 https://github.com/whwlsfb/Log4j2Scan 项目的插件，感谢师傅允许二开
 
 使用教程如下：
