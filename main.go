@@ -1,79 +1,85 @@
 package main
 
 import (
-	"bufio"
 	"flag"
 	"fmt"
+	"github.com/KpLi0rn/Log4j2Scan/config"
+	"github.com/KpLi0rn/Log4j2Scan/core"
+	"github.com/KpLi0rn/Log4j2Scan/log"
+	module "github.com/KpLi0rn/Log4j2Scan/model"
 	"os"
+	"os/signal"
+	"syscall"
 	"time"
 )
 
 var (
-	port int
-	help   bool
-
+	ResultChan chan *module.Result
+	RenderChan chan *module.Result
 )
 
-type result struct {
-	host string
-	name string
-	finger string
-}
-
-var (
-	socketChan chan bool
-	resultChan chan *result
-)
-
-
-func main(){
-	logo :=
-"    __                __ __  _ _____                \n" +
-"   / /   ____  ____ _/ // / (_) ___/_________ _____ \n  " +
-  "/ /   / __ \\/ __ `/ // /_/ /\\__ \\/ ___/ __ `/ __ \\\n " +
- "/ /___/ /_/ / /_/ /__  __/ /___/ / /__/ /_/ / / / /\n" +
-"/_____/\\____/\\__, /  /_/_/ //____/\\___/\\__,_/_/ /_/ \n " +
-	          "/____/    /___/                         \n" +
-	"    coded by 天下大木头"
-	fmt.Println(logo)
+func main() {
+	core.PrintLogo(config.GetAuthors())
 	parserInput()
-	now := time.Now()
-	socketChan = make(chan bool)
-	resultChan = make(chan *result)
-	go TcpStart(port)
-	for{
-		select {
-		case <-socketChan:
-			fmt.Printf("[+] Log4j2Vuln Detected\n")
-			res := <-resultChan
-			fmt.Println((*res).host,(*res).name)
-			content := fmt.Sprintf("Host: %s is vulnerable !\n",(*res).host)
-			writeFile(fmt.Sprintf("log4j2ScanRes-%d.txt",now.Unix()),content)
+	ResultChan = make(chan *module.Result, config.DefaultChannelSize)
+	RenderChan = make(chan *module.Result, config.DefaultChannelSize)
+	go core.StartFakeServer(&ResultChan)
+	go core.StartHttpServer(&RenderChan)
+	go func() {
+		for {
+			select {
+			case res := <-ResultChan:
+				info := fmt.Sprintf("%s->%s", res.Name, res.Host)
+				log.Info("log4j2 detected")
+				log.Info(info)
+				data := &module.Result{
+					Host:   res.Host,
+					Name:   res.Name,
+					Finger: res.Finger,
+				}
+				RenderChan <- data
+			}
 		}
-	}
-
-}
-
-func writeFile(filename string,content string) {
-	outputFile, outputError := os.OpenFile(filename, os.O_WRONLY|os.O_CREATE|os.O_APPEND, 0666)
-	if outputError != nil {
-		fmt.Println("[!] An error Occured with file opening or creation\n")
-		return
-	}
-	defer outputFile.Close()
-	outputWriter := bufio.NewWriter(outputFile)
-	outputWriter.WriteString(content)
-	outputWriter.Flush()
+	}()
+	time.Sleep(time.Second * 3)
+	fmt.Println("|------------------------------------|")
+	fmt.Println("|--Payload: ldap/rmi://your-ip:port--|")
+	fmt.Println("|------------------------------------|")
+	wait()
 }
 
 func parserInput() {
-	flag.IntVar(&port, "p", 8001, "detect port")
+	var (
+		port int
+		help bool
+	)
+	flag.IntVar(&port, "p", 8001, "server port")
 	flag.BoolVar(&help, "help", false, "help info")
 	flag.Parse()
 	if help {
 		flag.PrintDefaults()
 		return
 	}
+	if port > 0 && port < 1024 {
+		log.Warn("use system port")
+	}
+	if port > 65535 {
+		log.Error("use error port")
+		os.Exit(-1)
+	}
+	log.Info("use port %d", port)
+	config.Port = port
 }
 
-
+func wait() {
+	sign := make(chan os.Signal, 1)
+	done := make(chan bool, 1)
+	signal.Notify(sign, syscall.SIGINT, syscall.SIGTERM)
+	go func() {
+		sig := <-sign
+		fmt.Println()
+		fmt.Println(sig)
+		done <- true
+	}()
+	<-done
+}
