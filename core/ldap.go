@@ -14,7 +14,7 @@ var (
 
 func StartFakeServer(resultChan *chan *module.Result) {
 	ResultChan = *resultChan
-	log.Info("start fake reverse server")
+	log.Info(fmt.Sprintf("start fake reverse server at %d",config.Port))
 	listen, err := net.Listen("tcp", fmt.Sprintf("0.0.0.0:%d", config.Port))
 	if err != nil {
 		log.Error("listen fail err: %s", err)

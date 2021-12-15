@@ -51,9 +51,11 @@ func main() {
 func parserInput() {
 	var (
 		port int
+		wport int
 		help bool
 	)
 	flag.IntVar(&port, "p", 8001, "server port")
+	flag.IntVar(&wport, "wp", 8888, "web page port")
 	flag.BoolVar(&help, "help", false, "help info")
 	flag.Parse()
 	if help {
@@ -67,8 +69,9 @@ func parserInput() {
 		log.Error("use error port")
 		os.Exit(-1)
 	}
-	log.Info("use port %d", port)
+	log.Info("use port %d, %d", port, wport)
 	config.Port = port
+	config.Wport = wport
 }
 
 func wait() {

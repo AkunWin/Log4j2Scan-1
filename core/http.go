@@ -1,6 +1,8 @@
 package core
 
 import (
+	"fmt"
+	"github.com/KpLi0rn/Log4j2Scan/config"
 	"github.com/KpLi0rn/Log4j2Scan/log"
 	module "github.com/KpLi0rn/Log4j2Scan/model"
 	"net/http"
@@ -14,11 +16,11 @@ var (
 )
 
 func StartHttpServer(renderChan *chan *module.Result) {
-	log.Info("start result http server")
+	log.Info(fmt.Sprintf("start result http server at %d",config.Wport))
 	mux := http.NewServeMux()
 	mux.Handle("/", &resultHandler{})
 	server := &http.Server{
-		Addr:         ":8888",
+		Addr:         fmt.Sprintf(":%d",config.Wport),
 		WriteTimeout: time.Second * 3, //设置3秒的写超时
 		Handler:      mux,
 	}

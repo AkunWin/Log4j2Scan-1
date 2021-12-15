@@ -2,6 +2,7 @@ package config
 
 var (
 	Port int
+	Wport int
 )
 
 const (
