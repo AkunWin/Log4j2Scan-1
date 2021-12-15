@@ -17,6 +17,8 @@
 
 ## 使用
 
+根据自己操作系统下载对应的可执行文件：[下载地址](https://github.com/KpLi0rn/Log4j2Scan/releases/tag/v0.0.1)
+
 命令：`./Log4j2Scan -p port`
 
 ```text
