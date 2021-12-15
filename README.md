@@ -13,7 +13,7 @@
 - 由`Golang`编写，直接运行可执行文件进行检测
 - 动态渲染数据到`web`页面，方便观察结果
 
-![](https://github.com/KpLi0rn/Log4j2Scan/blob/master/img/01.png)
+![](https://github.com/KpLi0rn/Log4j2Scan/blob/master/img/001.png)
 
 ## 使用
 
