@@ -20,33 +20,43 @@ var (
 )
 
 func main() {
+	initApp()
+	go core.StartFakeServer(&ResultChan)
+	go core.StartHttpServer(&RenderChan)
+	go startApp()
+	printPayload()
+	wait()
+}
+
+func initApp() {
 	core.PrintLogo(config.GetAuthors())
 	parserInput()
 	ResultChan = make(chan *model.Result, config.DefaultChannelSize)
 	RenderChan = make(chan *model.Result, config.DefaultChannelSize)
-	go core.StartFakeServer(&ResultChan)
-	go core.StartHttpServer(&RenderChan)
-	go func() {
-		for {
-			select {
-			case res := <-ResultChan:
-				info := fmt.Sprintf("%s->%s", res.Name, res.Host)
-				log.Info("log4j2 detected")
-				log.Info(info)
-				data := &model.Result{
-					Host:   res.Host,
-					Name:   res.Name,
-					Finger: res.Finger,
-				}
-				RenderChan <- data
+}
+
+func startApp() {
+	for {
+		select {
+		case res := <-ResultChan:
+			info := fmt.Sprintf("%s->%s", res.Name, res.Host)
+			log.Info("log4j2 detected")
+			log.Info(info)
+			data := &model.Result{
+				Host:   res.Host,
+				Name:   res.Name,
+				Finger: res.Finger,
 			}
+			RenderChan <- data
 		}
-	}()
+	}
+}
+
+func printPayload() {
 	time.Sleep(time.Second * 3)
 	fmt.Println("|------------------------------------|")
 	fmt.Println("|--Payload: ldap/rmi://your-ip:port--|")
 	fmt.Println("|------------------------------------|")
-	wait()
 }
 
 func parserInput() {

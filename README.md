@@ -45,9 +45,11 @@ Demo
 |------------------------------------|
 ```
 
-只需要将`Payload`设置为：`ldap://your-ip:port`或`rmi://your-ip:port`
+只需要将`Payload`设置为：`ldap://your-ip:port`或`rmi://your-ip:port/xxx`
 
 然后访问：`localhost:8888`即可动态查看最新结果
+
+注意：`rmi`方式一定要加入`xxx`
 
 ## 拓展
 

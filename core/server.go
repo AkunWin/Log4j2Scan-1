@@ -62,6 +62,7 @@ func acceptProcess(conn *net.Conn) {
 		return
 	}
 	_ = (*conn).Close()
+	return
 }
 
 // RMI Protocol Docs:
