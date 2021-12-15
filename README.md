@@ -4,6 +4,7 @@
 ![](https://img.shields.io/badge/golang-1.17-blue)
 
 ## 介绍
+该项目由 天下大木头 与 4ra1n师傅 共同开发，感谢4ra1n师傅的许多帮助
  
 这是什么？
 
