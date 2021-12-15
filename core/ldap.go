@@ -35,6 +35,7 @@ func acceptProcess(conn *net.Conn) {
 	num, err := (*conn).Read(buf)
 	if err != nil {
 		log.Error("accept data reading err: %s", err)
+		_ = (*conn).Close()
 		return
 	}
 	hexStr := fmt.Sprintf("%x", buf[:num])
@@ -60,6 +61,7 @@ func acceptProcess(conn *net.Conn) {
 		_ = (*conn).Close()
 		return
 	}
+	_ = (*conn).Close()
 }
 
 // RMI Protocol Docs:
