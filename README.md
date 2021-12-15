@@ -7,7 +7,7 @@
  
 这是什么？
 
-一款无须借助`dnslog`且完全无害的log4j2检测工具，解析`RMI`和`LDAP`协议实现
+该项目一款无须借助`dnslog`且完全无害的log4j2检测工具，解析`RMI`和`LDAP`协议实现
 
 特点：
 - 由`Golang`编写，直接运行可执行文件进行检测
@@ -16,6 +16,8 @@
 ![](https://github.com/KpLi0rn/Log4j2Scan/blob/main/img/001.png)
 
 ## 使用
+
+发送 `${jndi:ldap://ip:端口/}` payload ，如果目标存在漏洞，该项目就会收到 ldap/rmi 请求从而快速定位哪些目标存在漏洞
 
 根据自己操作系统下载对应的可执行文件：[下载地址](https://github.com/KpLi0rn/Log4j2Scan/releases/tag/v0.0.1)
 
