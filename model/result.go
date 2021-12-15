@@ -1,4 +1,4 @@
-package module
+package model
 
 type Result struct {
 	Host   string

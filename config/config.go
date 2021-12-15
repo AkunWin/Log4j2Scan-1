@@ -1,7 +1,8 @@
 package config
 
 var (
-	Port int
+	Port     int
+	HttpPort int
 )
 
 const (

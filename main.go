@@ -6,7 +6,8 @@ import (
 	"github.com/KpLi0rn/Log4j2Scan/config"
 	"github.com/KpLi0rn/Log4j2Scan/core"
 	"github.com/KpLi0rn/Log4j2Scan/log"
-	module "github.com/KpLi0rn/Log4j2Scan/model"
+	"github.com/KpLi0rn/Log4j2Scan/model"
+	"github.com/KpLi0rn/Log4j2Scan/util"
 	"os"
 	"os/signal"
 	"syscall"
@@ -14,15 +15,15 @@ import (
 )
 
 var (
-	ResultChan chan *module.Result
-	RenderChan chan *module.Result
+	ResultChan chan *model.Result
+	RenderChan chan *model.Result
 )
 
 func main() {
 	core.PrintLogo(config.GetAuthors())
 	parserInput()
-	ResultChan = make(chan *module.Result, config.DefaultChannelSize)
-	RenderChan = make(chan *module.Result, config.DefaultChannelSize)
+	ResultChan = make(chan *model.Result, config.DefaultChannelSize)
+	RenderChan = make(chan *model.Result, config.DefaultChannelSize)
 	go core.StartFakeServer(&ResultChan)
 	go core.StartHttpServer(&RenderChan)
 	go func() {
@@ -32,7 +33,7 @@ func main() {
 				info := fmt.Sprintf("%s->%s", res.Name, res.Host)
 				log.Info("log4j2 detected")
 				log.Info(info)
-				data := &module.Result{
+				data := &model.Result{
 					Host:   res.Host,
 					Name:   res.Name,
 					Finger: res.Finger,
@@ -50,25 +51,25 @@ func main() {
 
 func parserInput() {
 	var (
-		port int
-		help bool
+		port     int
+		httpPort int
+		help     bool
 	)
 	flag.IntVar(&port, "p", 8001, "server port")
+	flag.IntVar(&httpPort, "http-port", 8888, "http port")
 	flag.BoolVar(&help, "help", false, "help info")
 	flag.Parse()
 	if help {
 		flag.PrintDefaults()
 		return
 	}
-	if port > 0 && port < 1024 {
-		log.Warn("use system port")
-	}
-	if port > 65535 {
-		log.Error("use error port")
+	if !util.CheckPort(port) || !util.CheckPort(httpPort) {
 		os.Exit(-1)
 	}
-	log.Info("use port %d", port)
+	log.Info("use port: %d", port)
+	log.Info("use http port: %d", httpPort)
 	config.Port = port
+	config.HttpPort = httpPort
 }
 
 func wait() {
