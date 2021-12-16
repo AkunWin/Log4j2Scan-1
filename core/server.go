@@ -72,8 +72,10 @@ func checkRMI(data []byte) bool {
 		data[1] == 0x52 &&
 		data[2] == 0x4d &&
 		data[3] == 0x49 {
-		if data[4] != 0x00 &&
-			data[4] != 0x01 {
+		if data[4] != 0x00 {
+			return false
+		}
+		if data[5] != 0x01 && data[5] != 0x02 {
 			return false
 		}
 		if data[6] != 0x4b &&
