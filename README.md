@@ -65,29 +65,6 @@ Demo
 
 注意：`rmi`方式payload要为 `${jndi:rmi://127.0.0.1:8001/xxxx}` 类似这种形式
 
-## 配合release中的burp插件使用
-
-f0ng 师傅的插件也可以直接配合进行使用：https://github.com/f0ng/log4j2burpscanner
-
-简单修改了 https://github.com/whwlsfb/Log4j2Scan 项目的插件，感谢师傅允许二开
-
-使用教程如下：
-
-正常导入burp插件，使用 ceye 模块 注：只有ceye模块被修改了
-
-Log4j2hostIp处填写 VPS的ip和端口，下面的任意填写
-![](https://github.com/KpLi0rn/Log4j2Scan/blob/main/img/003.png)
-
-启动工具
-
-![](https://github.com/KpLi0rn/Log4j2Scan/blob/main/img/004.png)
-
-启动漏洞环境，利用 burp 进行抓包，反连平台成功收到请求
-
-![](https://github.com/KpLi0rn/Log4j2Scan/blob/main/img/005.png)
-
-
-
 
 ## 拓展
 
